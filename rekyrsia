@@ -1,0 +1,142 @@
+# Solve the puzzle and the treasures will be yours.
+# Say numbers from 1 to 8 to move skeletons.
+# The necromancer always knows the puzzle state.
+boneMaster = hero.findFriends()[0]
+puzzleState = boneMaster.getPuzzleState()
+# The result state should be this:
+goalState = [[1,2,3],[4,5,6],[7,8,0]]
+rt=0
+def Pekypcu(x,y,State,PX,raz):
+    
+    l=0
+    rt+=1
+    
+    for i in range(0,3,1):
+        for j in range(0,3,1):
+            
+            if goalState[i][j]==State[i][j]:
+                l+=1
+            else:
+                break
+    
+    #hero.say("raz "+raz)
+    if l==9 :
+        hero.say("Решение найдено. ")
+        
+        return [PX]
+    if raz>12:
+        #hero.say("возврат "+raz)
+        return [20]
+    #raz+=1
+    #State1=State
+    
+    
+    x0=0
+    y0=0
+    #State[строка x][столбец y]
+    if State[0][0]==1 and State[0][1]==2 and State[0][2]==3:
+        x0=1
+    if State[0][0]==1 and State[1][0]==4  and State[2][0]==7:
+        y0=1
+    Xod = [[10,10,10],[10,10,10],[10,10,10],[10,10,10]]
+    #Xod=[[]]
+    xn=0
+    xk=3
+    #hero.say("(x-1) = "+(x-1))
+    #hero.say("State[x-1][y] = "+State[x-1][y])
+    if x-1>=x0 and State[x-1][y]<>PX:
+        if int( State[x-1][y]/3)>=x:
+            Xod[0][0]=State[x-1][y]
+            Xod[0][1] = x-1
+            Xod[0][2] = y
+            xn=1
+            #hero.say("Xod[0]")
+        else:
+            Xod[3][0]=State[x-1][y]
+            Xod[3][1] = x-1
+            Xod[3][2] = y
+            xk=2
+    if y-1>=y0 and State[x][y-1]<>PX:
+        if int( (State[x][y-1]+2)%3)>=y:
+            Xod[xn][0]=State[x][y-1]
+            Xod[xn][1]=x
+            Xod[xn][2]=y-1
+            xn+=1
+        else:
+            Xod[xk][0]=State[x][y-1]
+            Xod[xk][1]=x
+            Xod[xk][2]=y-1
+            xk-=1
+    y+=1
+    if y<3 and State[x][y]<>PX:
+        if int( (State[x][y]+2)%3)<=y-1:
+            Xod[xn][0]=State[x][y]
+            Xod[xn][1]=x
+            Xod[xn][2]=y
+            xn+=1
+        else:
+            Xod[xk][0]=State[x][y]
+            Xod[xk][1]=x
+            Xod[xk][2]=y
+            xk-=1
+    y-=1
+    x+=1
+    if x<3 and State[x][y]<>PX:
+        if int( State[x][y]/3)<=x-1:
+            Xod[xn][0]=State[x][y]
+            Xod[xn][1]=x
+            Xod[xn][2]=y
+            xn+=1
+        else:
+            Xod[xk][0]=State[x][y]
+            Xod[xk][1]=x
+            Xod[xk][2]=y
+            xk-=1
+    x-=1
+    
+    #Xod.push([15,15,15])
+    #return Xod
+    #if len(Xod)<1:
+    #    return [20]
+    #hero.say("len(Xod) "+len(Xod))
+    
+    for s in Xod:
+        
+        
+        if s[0]>0 and s[0]<10 :
+            State1=State
+             
+            #State1=State
+            State1[x][y]=s[0]
+            State1[s[1]][s[2]]=0
+            #hero.say("Xod"+len (State1)+") "+ s[0]+"  raz "+raz +"  r"+s[0]  +"  r"+s[1]+"  "+s[2])
+            x3=s[1]
+            y3=s[2]
+            tt=Pekypcu(x3,y3,State1,s[0],raz+1)
+            if tt[0]<10 and tt[0]>0:
+                
+                
+                tt.push(PX)
+                #for h in tt:
+                #    hero.say("TT = "+h)
+                return tt
+    #hero.say("raz конечный "+raz)
+    return [20]
+
+for a in range(3):
+    for b in range(3):
+        if puzzleState[a][b]==0:
+            x=a
+            y=b
+
+# Solve, Solve, Solve!
+#hero.say("message "+x+" "+y)
+
+a=[20]
+a=Pekypcu(x,y,puzzleState,0,0)
+hero.say("Было просчитано "+rt+" ходов")
+for b in range(len(a)-1,0,-1):
+    
+    hero.say(""+a[b-1])
+        
+
