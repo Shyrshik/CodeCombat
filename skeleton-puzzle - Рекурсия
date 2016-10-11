@@ -2,6 +2,7 @@
 # Solve the puzzle and the treasures will be yours.
 # Say numbers from 1 to 8 to move skeletons.
 # The necromancer always knows the puzzle state.
+hero.wait(2) #Скелеты ну успевают расставиться на места
 boneMaster = hero.findFriends()[0]
 puzzleState = boneMaster.getPuzzleState()
 # The result state should be this:
@@ -10,12 +11,15 @@ rt=0        #Колличество запусков рекурсии
 def Pekypcu(x,y,State,PX,raz):
     l=0     #проверка выполнения задания
     rt+=1   #счетчик перезапусков
+    if rt%500 ==0:
+        hero.say("Просчитано "+rt+" ходов.")
+    if rt>5000:
+        return [20]
     for i in range(0,3,1):
         for j in range(0,3,1):
+            
             if goalState[i][j]==State[i][j]:
                 l+=1
-            else:
-                break
     if l==9 :   #выход из рекурсии если задача решена
         hero.say("Решение найдено. ")
         return [PX]
@@ -80,10 +84,15 @@ def Pekypcu(x,y,State,PX,raz):
             Xod[xk][2]=y
             xk-=1
     x-=1
-    hero.say("Xod = "+Xod+"State = "+State)
+    #hero.say("Xod = "+Xod+"State = "+State)
     for s in Xod:   #обход результатов
         if s[0]>0 and s[0]<10 :
-            State1=State
+            #создаем новую переменную, т.к.State-ссылка
+            State1 = [[1,2,3],[4,5,6],[7,8,0]]
+            for i in range(0,3,1): 
+                for j in range(0,3,1):
+                    State1[i][j]=State[i][j]
+            
             State1[x][y]=s[0]       #меняем местами скелета с пустой 
             State1[s[1]][s[2]]=0    #ячейкой
             tt=Pekypcu(s[1],s[2],State1,s[0],raz+1) #следующий ход
