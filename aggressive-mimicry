@@ -1,0 +1,74 @@
+#https://codecombat.com/play/level/aggressive-mimicry
+# Protect the village from ogres.
+# Watch for ogres, peasants and "peasants".
+
+# This function checks if the text starts with the word.
+def startsWith(text, word):
+    
+    # If the word is longer then the text:
+    if len(word) > len(text):
+        return False
+    
+    # Loop indexes for the word.
+    for index in range(len(word)):
+        # If letters with the same index are different:
+        
+        if word[index] != text[index]:
+            # Then the word doesn't coincide with the text.
+            return False
+    # We checked all letters and they are the same.
+    
+    return True
+
+#Функция Атаки
+def At(enemy,c=False):
+    
+    if enemy:
+        ar=hero.findByType("archer")
+        if len(ar)>0:
+            if len(ar)>0:
+                for b in ar:
+                    if b.pos.x>32:
+                        hero.command(b, "move", {"x": 30, "y": 27})
+                    else:
+                        hero.command(b, "attack", enemy)
+        
+        while enemy.health>0:
+            
+            if c and hero.isReady ("bash") :
+                hero.bash(enemy)
+                c=False
+            elif c and hero.canCast("chain-lightning", enemy) :
+                hero.cast("chain-lightning", enemy)
+                c=False
+            elif c:
+                hero.attack(enemy)
+                c=False
+            else:
+                hero.shield()
+                
+            #hero.wait(1)
+
+ogreNameStart = "Zog"
+hero.buildXY("fence", 18, 30)
+hero.buildXY("fence", 18, 25)
+hero.moveXY(40, 28)
+
+while True:
+    enemy = hero.findNearest(hero.findEnemies())
+    suspect = hero.findNearest(hero.findByType("peasant"))
+    
+    if hero.costOf("archer")<=hero.gold :
+        hero.summon("archer")
+    
+    if enemy:
+        At(enemy,True)
+    # Else return to the mark:
+    else:
+        ar=hero.findByType("archer")
+        if len(ar)>0:
+            for b in ar:
+                hero.command(b, "move", {"x": 30, "y": 27})
+        hero.moveXY(40, 27)
+
+
